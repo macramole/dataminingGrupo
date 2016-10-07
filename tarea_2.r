@@ -25,3 +25,4 @@ boxplot(df$ApD_Rmag)
 nrow( df[ df$ApD_Rmag < 0, ] )
 df[ df$ApD_Rmag < 0, "ApD_Rmag"] = 0
 
+
