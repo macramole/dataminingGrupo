@@ -24,5 +24,5 @@ hist(df$ApD_Rmag)
 boxplot(df$ApD_Rmag)
 nrow( df[ df$ApD_Rmag < 0, ] )
 df[ df$ApD_Rmag < 0, "ApD_Rmag"] = 0
-
+write.csv(df, file = "data_clean.csv", row.names = F)
 
