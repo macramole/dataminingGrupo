@@ -29,13 +29,8 @@ foreach(varK = 2:11) %dopar% {
         file = "fuzzy_results.csv", sep = ",", append = T, fill = T)
   }
 }
-# df.fuzz = fanny( df.dist, k = 4, diss = T,  memb.exp = 1.5, keep.diss = F, keep.data = F)
 
-summary(df.fuzz)
-head(df.fuzz$membership)
-#df.fuzzy =
-
-f=read.csv("/home/macramole/Desktop/dm/2do_cuatri/ciencia/tp2/rProject/ciencia/tp2/fuzzy_results.csv")
+f=read.csv("fuzzy_results.csv")
 #head(f)
 table(f$k) 
 
@@ -46,9 +41,7 @@ for ( i in min(f$k):max(f$k) ) {
   
   a = rbind(a, kFiltered[maxSilhuetteIndex,] )
 }
-a
 
-which
 
 library("plotly")
 library(dplyr)
