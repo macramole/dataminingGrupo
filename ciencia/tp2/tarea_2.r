@@ -24,5 +24,22 @@ hist(df$ApD_Rmag)
 boxplot(df$ApD_Rmag)
 nrow( df[ df$ApD_Rmag < 0, ] )
 df[ df$ApD_Rmag < 0, "ApD_Rmag"] = 0
-write.csv(df, file = "data_clean.csv", row.names = F)
+
+rownames(df)<-df[,1]
+df<-df[,-1]
+
+df<-df[,c(1,2,3,4,8,9,10,11)] #columnas con las que vamos a trabajar
+df$BjMag.comp<-df[,6]
+df[,c(5,6,7)]<-df[,c(5,6,7)]-df[,8] #normalizamos segun S280
+df<-as.data.frame(scale(df))     #estandarizamos
+
+dim(df)
+head(df)
+str(df)
+summary(df)
+
+df <- df[ -which(is.na(df[,8])), ]
+df <- df[ -which(is.na(df[,5])), ]
+
+write.csv(df, file = "data_clean.csv", row.names = T)
 

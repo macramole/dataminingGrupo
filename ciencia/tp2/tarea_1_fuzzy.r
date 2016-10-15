@@ -94,14 +94,21 @@ foreach(varMemb.exp = seq(1,1.2,0.02)) %dopar% {
       file = "fuzzy_results.csv", sep = ",", append = T, fill = T)
 }
 
+c(c(1,1),c(2,0))
 
 fuzzyResults %>%
   filter( k == 2, coeff > 0 ) %>%
   arrange(memb.exp) %>%
   plot_ly(x = memb.exp, y = coeff  )
 
+add_trace( x = c(1,2), y=c(1,0) )
+
 
 #reflexion
 #
 # creo que la posta es elegir un K con el menor "ruido" (membership > 0.6), en este caso
 # parecería ser el 2
+#
+#
+#
+#
