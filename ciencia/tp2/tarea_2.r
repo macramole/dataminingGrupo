@@ -25,21 +25,20 @@ boxplot(df$ApD_Rmag)
 nrow( df[ df$ApD_Rmag < 0, ] )
 df[ df$ApD_Rmag < 0, "ApD_Rmag"] = 0
 
+str(df)
+
 rownames(df)<-df[,1]
 df<-df[,-1]
 
-df<-df[,c(1,2,3,4,8,9,10,11)] #columnas con las que vamos a trabajar
-df$BjMag.comp<-df[,6]
-df[,c(5,6,7)]<-df[,c(5,6,7)]-df[,8] #normalizamos segun S280
+df<-df[,c(1,2,3,4,7,8,9,10,11)] #columnas con las que vamos a trabajar
+df$BjMag.comp<-df[,7]
+df[,6:8]<-df[,6:8]-df[,9] #normalizamos segun S280
 df<-as.data.frame(scale(df))     #estandarizamos
 
-dim(df)
-head(df)
-str(df)
 summary(df)
 
-df <- df[ -which(is.na(df[,8])), ]
-df <- df[ -which(is.na(df[,5])), ]
+df <- df[ -which(is.na(df[,9])), ]
+df <- df[ -which(is.na(df[,6])), ]
 
 write.csv(df, file = "data_clean.csv", row.names = T)
 
