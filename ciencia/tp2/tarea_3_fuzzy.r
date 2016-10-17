@@ -5,105 +5,52 @@ library(doMC)
 
 registerDoMC(3)
 
-df = read.csv("data_clean.csv",row.names = 1)
-
-summary(df)
-rownames(df)
-nrow(df)
-
+df = read.csv("data_clean.csv",row.names = 1) #mirar si esta escalado
 df.dist = dist(df, method = "euclidean")
 
-varK = 3
-varMemb.exp = 1.7
+df.fuzzy = fanny( df.dist, k = 3, diss = T,  memb.exp = 1.2, keep.diss = F, keep.data = F)
 
-fuzzyCSVFile = "fuzzy_results_3.csv"
+df.fuzzy.clusters = apply(df.fuzzy$membership, 1, which.max)
+df.fuzzy.clusters = cbind(df.fuzzy.clusters, apply(df.fuzzy$membership, 1, max) )
 
-cat("dataset","k","memb.exp","silhuette_avg.width","coeff","time", file = fuzzyCSVFile, sep = ",", append = F, fill = T)
+df.fuzzy.clusters.0 = df.fuzzy.clusters
+df.fuzzy.clusters.0[df.fuzzy.clusters.0[,2] < 0.6, 1 ] = 0
 
-#barrer k, memb.exp
-foreach(varK = 2:4) %dopar% {
-  for ( varMemb.exp in seq(1.1,2,0.1) ) {
-    t0 = Sys.time()
-    df.fuzz = fanny( df.dist, k = varK, diss = T,  memb.exp = varMemb.exp, keep.diss = F, keep.data = F)
-    t1 = Sys.time()
-    # cat("Tiempo: ", as.numeric(t1 - t0))
-    cat("tp2", varK, varMemb.exp, df.fuzz$silinfo$avg.width, df.fuzz$coeff[2], as.numeric(t1 - t0, units = "secs"),
-        file = fuzzyCSVFile, sep = ",", append = T, fill = T)
-  }
-}
+df.pca <- prcomp(df)
+df.pca.pc1 <- df.pca$x[,1]
+df.pca.pc2 <- df.pca$x[,2]
 
-#Analizo resultados
+col <- c("#000000","#766272","#4BDBC0","#F5AF3B")
+qplot(df.pca.pc1,df.pca.pc2, color = df.fuzzy.clusters.0[,1] ) + scale_colour_manual(values=col) + labs(title="Agrupamiento difuso sobre PCA",x="PC1",y="PC2",colour="Grupo")
 
-fuzzyResults =read.csv(fuzzyCSVFile)
-#head(f)
-table(fuzzyResults$k) 
+df.fuzzy.negSil = df.fuzzy$silinfo$widths[ df.fuzzy$silinfo$widths[,3] < 0, ]
+df.fuzzy.negSil = cbind ( df.fuzzy$membership[ rownames(df.fuzzy.negSil), ], df.fuzzy.negSil[,3] )
+df.fuzzy.clusters.negSil = df.fuzzy.clusters
+df.fuzzy.clusters.negSil[ rownames(df.fuzzy.3.negSil), 1 ] = 0
 
-fuzzyResults.max = c()
-for ( i in min(fuzzyResults$k):max(fuzzyResults$k) ) {
-  kFiltered = fuzzyResults[ fuzzyResults$k == i , ]
-  maxSilhuetteIndex = which.max(kFiltered[,c("silhuette_avg.width")])
-  
-  fuzzyResults.max = rbind(fuzzyResults.max, kFiltered[maxSilhuetteIndex,] )
-}
+a = rownames(df.fuzzy.clusters.negSil[ df.fuzzy.clusters.negSil[,1] == 0,  ])
+b = rownames(df.fuzzy.clusters.0[ df.fuzzy.clusters.0[,1] == 0,  ])
+length(a)
+length(b)
 
+length( intersect(a,b) )
 
-library("plotly")
-library(dplyr)
+c = setdiff(rownames(df),intersect(a,b))
+length(rownames(df)) - length(intersect(a,b))
+length(c)
 
-plot_ly(fuzzyResults.max, x = k, y= silhuette_avg.width, name="silhuette") %>%
-  add_trace(x = k, y = coeff, name="coeff")
+df.no0 = df[ c, ]
+df.no0.dist = dist(df.no0, method = "euclidean")
+df.no0.fuzzy = fanny( df.no0.dist, k = 3, diss = T,  memb.exp = 1.2, keep.diss = F, keep.data = F)
 
-plot_ly(fuzzyResults[fuzzyResults$k == 2,], x = memb.exp, y = silhuette_avg.width, name = "k = 2")
-add_trace(fuzzyResults[fuzzyResults$k == 3,], x = memb.exp, y = silhuette_avg.width, name = "k = 3")
-add_trace(fuzzyResults[fuzzyResults$k == 4,], x = memb.exp, y = silhuette_avg.width, name = "k = 4")
-
-plot_ly(fuzzyResults[fuzzyResults$k == 2,], x = memb.exp, y = coeff, name = "k = 2")
-add_trace(fuzzyResults[fuzzyResults$k == 3,], x = memb.exp, y = coeff, name = "k = 3")
-add_trace(fuzzyResults[fuzzyResults$k == 4,], x = memb.exp, y = coeff, name = "k = 4")
-
-
-
-fuzzyResults.max
-
-df.fuzzy.2 = fanny( df.dist, k = 2, diss = T,  memb.exp = 1.2, keep.diss = F, keep.data = F)
-df.fuzzy.3 = fanny( df.dist, k = 3, diss = T,  memb.exp = 1.2, keep.diss = F, keep.data = F)
-df.fuzzy.4 = fanny( df.dist, k = 4, diss = T,  memb.exp = 1.2, keep.diss = F, keep.data = F)
-
-df.fuzzy.2.negSil = df.fuzzy.2$silinfo$widths[ df.fuzzy.2$silinfo$widths[,3] < 0, ]
-cbind ( df.fuzzy.2$membership[ rownames(df.fuzzy.2.negSil), ], df.fuzzy.2.negSil[,3] )
-df.fuzzy.2.highSil = df.fuzzy.2$silinfo$widths[ df.fuzzy.2$silinfo$widths[,3] > 0.4, ]
-cbind ( df.fuzzy.2$membership[ rownames(df.fuzzy.2.highSil), ], df.fuzzy.2.highSil[,3] )
-
-df.fuzzy.3.negSil = df.fuzzy.3$silinfo$widths[ df.fuzzy.3$silinfo$widths[,3] < 0, ]
-cbind ( df.fuzzy.3$membership[ rownames(df.fuzzy.3.negSil), ], df.fuzzy.3.negSil[,3] )
-
-pdf("asd.pdf")
-plot(silhouette(df.fuzzy.2))
-plot(silhouette(df.fuzzy.3))
-plot(silhouette(df.fuzzy.4))
+pdf("silhouette_fuzzy_2.pdf")
+plot(silhouette(df.no0.fuzzy))
 dev.off()
 
-
-#intento mejorar el coeff 
-varK = 2
-
-foreach(varMemb.exp = seq(1,1.2,0.02)) %dopar% {
-  t0 = Sys.time()
-  df.fuzz = fanny( df.dist, k = varK, diss = T,  memb.exp = varMemb.exp, keep.diss = F, keep.data = F)
-  t1 = Sys.time()
-  # cat("Tiempo: ", as.numeric(t1 - t0))
-  cat("tp2", varK, varMemb.exp, df.fuzz$silinfo$avg.width, df.fuzz$coeff[2], as.numeric(t1 - t0, units = "secs"),
-      file = fuzzyCSVFile, sep = ",", append = T, fill = T)
-}
+col <- c("#766272","#4BDBC0","#F5AF3B")
+df.no0.clusters = apply(df.no0.fuzzy$membership, 1, which.max)
+df.no0.clusters = cbind(df.no0.clusters, apply(df.no0.fuzzy$membership, 1, max) )
+qplot(df.pca.pc1,df.pca.pc2, color = df.no0.clusters[,1] ) + scale_colour_manual(values=col) + labs(title="Agrupamiento difuso sobre PCA",x="PC1",y="PC2",colour="Grupo")
 
 
-fuzzyResults %>%
-  filter( k == 2, coeff > 0 ) %>%
-  arrange(memb.exp) %>%
-  plot_ly(x = memb.exp, y = coeff  )
 
-
-#reflexion
-#
-# creo que la posta es elegir un K con el menor "ruido" (membership > 0.6), en este caso
-# parecería ser el 2
