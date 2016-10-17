@@ -86,8 +86,9 @@ plot(df.pam.optimal$p)
 
 # Muestro los prototipos + isolation
 
-data.frame(df[df.pam.optimal$p$medoids,], tamaño=df.pam.optimal$p$clusinfo[,1])
+write.csv(data.frame(df[df.pam.optimal$p$medoids,], tamaño=df.pam.optimal$p$clusinfo[,1]),"pam_medoides_1.csv")
 df.pam.optimal$p$isolation
+
 
 # PCA para graficar
 df.pca <- prcomp(df)
