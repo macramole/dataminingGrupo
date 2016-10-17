@@ -25,5 +25,5 @@ base = base[,-c(1,2)]
 
 K1<- kmeans(x = base, 3 , iter.max = 50)
 col <- c("#766272","#4BDBC0","#F5AF3B")
-qplot(base.xy$x,base.xy$y, color = as.factor(K1$cluster) )  + scale_colour_manual(values=col) + theme(panel.background = element_rect(fill = 'white')) + labs(title="Corrimiento al rojo sobre X e Y",x="X",y="Y", colour= "MC_z")
+qplot(base.xy$x,base.xy$y, color = as.factor(K1$cluster) )  + scale_colour_manual(values=col) + theme(panel.background = element_rect(fill = 'white')) + labs(title="Grupos de K-Medias sobre X e Y",x="X",y="Y", colour= "Grupo")
 
