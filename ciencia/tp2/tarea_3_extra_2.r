@@ -8,4 +8,5 @@ summary(df$MC_z)
 hist(df$MC_z)
 df.MC_z.discret = discretize(df$MC_z,method = "interval",categories = 3)
 
-qplot(df.xy$x,df.xy$y, color = df.MC_z.discret ) + labs(title="Corrimiento al rojo sobre X e Y",x="X",y="Y")
+qplot(df.xy$x,df.xy$y, color = df.MC_z.discret ) + labs(title="Corrimiento al rojo sobre X e Y",x="X",y="Y", colour= "MC_z estandarizado")
+qplot(df.xy$x,df.xy$y, color = df$MC_z ) + labs(title="Corrimiento al rojo sobre X e Y",x="X",y="Y", colour= "MC_z estandarizado")
