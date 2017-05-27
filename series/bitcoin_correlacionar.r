@@ -1,3 +1,8 @@
+library(lmtest)
+library(plotly)
+
+# Autocorrelación
+
 df = read.csv("base_sin_tend.txt", sep = "\t")
 head(df)
 
@@ -18,16 +23,24 @@ for ( campo in camposSinTend ) {
   autocorrelaciones = c(autocorrelaciones, autocorrelacionesMenores )
 }
 names(autocorrelaciones) = camposSinTend
-autocorrelaciones
 
 plot_ly( y = names(autocorrelaciones), x = autocorrelaciones )
+plot_ly( y = names(autocorrelaciones), x = autocorrelaciones/lagMax)
+
+# Gráficos de autocorrelación junto con la prueba Ljung-Box
 
 par( mfrow = c(2,4) )
-# par( mfrow = c(1,1) )
-acf( df$BITCOIN_COINDESK_sintend, lag.max = lagMax  )
-acf( df$USD_EUR_sintend, lag.max = lagMax )
-acf( df$USD_BZR_sintend, lag.max = lagMax )
-acf( df$USD_INR_sintend, lag.max = lagMax )
-acf( df$USD_MEX_sintend, lag.max = lagMax )
-acf( df$USD_JPY_sintend, lag.max = lagMax )
-acf( df$USD_SWF_sintend, lag.max = lagMax )
+for(moneda in camposSinTend){
+  print(moneda)
+  print(Box.test(df[moneda], lag= lagMax, type = "Ljung-Box"))
+  acf(df[moneda], lag.max = lagMax)
+}
+
+# Gráficos de correlación cruzada
+
+par( mfrow = c(3,4) )
+for(moneda1 in camposSinTend){
+  for(moneda2 in camposSinTend){
+    ccf(df[moneda1],df[moneda2], lag.max = lagMax,main=paste(moneda1,"&",moneda2))
+  }
+}
