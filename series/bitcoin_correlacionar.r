@@ -42,5 +42,5 @@ for(moneda in camposSinTend){
 
 # Gráficos de correlación cruzada
 
-pnl <- function(x, y = x) { par(new = TRUE); ccf(x, y, lag.max = lagMax, col = "grey") }
+pnl <- function(x, y = x) { par(new = TRUE); ccf(x, y, lag.max = lagMax) }
 pairs(df[,12:18], lower.panel = pnl, diag.panel = NULL, cex.labels = 1)
