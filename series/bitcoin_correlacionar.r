@@ -25,6 +25,9 @@ for ( campo in camposSinTend ) {
 names(autocorrelaciones) = camposSinTend
 
 plot_ly( y = names(autocorrelaciones), x = autocorrelaciones )
+
+# Mismo gráfico que el anterior, pero expresado como % de puntos no significativos
+
 plot_ly( y = names(autocorrelaciones), x = autocorrelaciones/lagMax)
 
 # Gráficos de autocorrelación junto con la prueba Ljung-Box
@@ -33,14 +36,11 @@ par( mfrow = c(2,4) )
 for(moneda in camposSinTend){
   print(moneda)
   print(Box.test(df[moneda], lag= lagMax, type = "Ljung-Box"))
-  acf(df[moneda], lag.max = lagMax)
+  acf(df[moneda], lag.max = lagMax, main = moneda)
 }
+
 
 # Gráficos de correlación cruzada
 
-par( mfrow = c(3,4) )
-for(moneda1 in camposSinTend){
-  for(moneda2 in camposSinTend){
-    ccf(df[moneda1],df[moneda2], lag.max = lagMax,main=paste(moneda1,"&",moneda2))
-  }
-}
+pnl <- function(x, y = x) { par(new = TRUE); ccf(x, y, lag.max = lagMax, col = "grey") }
+pairs(df[,12:18], lower.panel = pnl, diag.panel = NULL, cex.labels = 1)
