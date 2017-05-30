@@ -5,7 +5,6 @@ df = read.csv("base_sin_tend.txt", sep = "\t")
 range = 118:length(df$BITCOIN_COINDESK_sintend)
 N = length(range)
 
-
 camposSinTend = c("BITCOIN_COINDESK_sintend", "USD_EUR_sintend", "USD_BZR_sintend", "USD_INR_sintend", "USD_MEX_sintend", "USD_JPY_sintend", "USD_SWF_sintend")
 
 par(mfrow=c(1,1))
@@ -19,13 +18,18 @@ colnames(df.fft) = camposSinTend
 
 for ( campo in camposSinTend ) {
   serie = df[,campo][range]
-  serie = serie - mean(serie)
+  # serie = serie - mean(serie)
+  # serie = serie / sd(serie)
+  # NORMALIZO !!
+  serie = scale(serie)
   
   currentOriginal = fft( serie )
   df.fft.original[,campo] = currentOriginal
   
   currentFFT = Mod( currentOriginal )
   currentFFT = currentFFT[1:(length(currentFFT)/2)]
+  # Calibro los datos del FFT
+  currentFFT = currentFFT / N
   df.fft[,campo] = currentFFT
 }
 
@@ -35,11 +39,19 @@ for ( campo in camposSinTend ) {
   plot(1:12, df.fft[,campo][2:13], type="h", main = campo)
 }
 
+library(dplyr)
+
+as.data.frame(df.fft) %>%
+  slice(2:13) %>%
+  plot_ly( y = ~BITCOIN_COINDESK_sintend, x = 1:12, type = "bar"  )
+  
+  add_trace( y = df.fft[, "USD_EUR_sintend"][2:13], x = 1:12, type = "bar"  )
 
 df.fft.bitcoin.original = fft( df$BITCOIN_COINDESK_sintend[range] )
 df.fft.bitcoin = Mod( df.fft.bitcoin.original )
 df.fft.bitcoin = df.fft.bitcoin[1:(length(df.fft.bitcoin)/2)]
 plot(df.fft.bitcoin[1:50], type="h")
+
 
 plot_ly( y = df.fft.bitcoin[1:50] , x = 0:49, type = "bar"  )
 
