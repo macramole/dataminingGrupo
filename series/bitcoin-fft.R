@@ -54,15 +54,17 @@ as.data.frame(df.fft) %>%
   
 
 #LINE
+fftRange = 2:13
+
 as.data.frame(df.fft) %>%
-  slice(2:13) %>%
-  plot_ly( y = ~BITCOIN_COINDESK_sintend, x = 1:12, type = "scatter", mode="lines+markers", name="Bitcoin"  ) %>%
-  add_trace( y = ~USD_EUR_sintend, x = 1:12, type = "scatter", name="Euro"  ) %>%
-  add_trace( y = ~USD_JPY_sintend, x = 1:12, type = "scatter", name="Japon"  ) %>%
-  add_trace( y = ~USD_SWF_sintend, x = 1:12, type = "scatter", name="Suecia"  ) %>%
-  add_trace( y = ~USD_BZR_sintend, x = 1:12, type = "scatter", name="Brazil"  ) %>%
-  add_trace( y = ~USD_INR_sintend, x = 1:12, type = "scatter", name="India"  ) %>%
-  add_trace( y = ~USD_MEX_sintend, x = 1:12, type = "scatter", name="Mexico" )
+  slice(fftRange) %>%
+  plot_ly( y = ~BITCOIN_COINDESK_sintend, x = (fftRange - 1), type = "scatter", mode="lines+markers", name="Bitcoin"  ) %>%
+  add_trace( y = ~USD_EUR_sintend, x = (fftRange - 1), type = "scatter", name="Euro"  ) %>%
+  add_trace( y = ~USD_JPY_sintend, x = (fftRange - 1), type = "scatter", name="Japon"  ) %>%
+  add_trace( y = ~USD_SWF_sintend, x = (fftRange - 1), type = "scatter", name="Suecia"  ) %>%
+  add_trace( y = ~USD_BZR_sintend, x = (fftRange - 1), type = "scatter", name="Brazil"  ) %>%
+  add_trace( y = ~USD_INR_sintend, x = (fftRange - 1), type = "scatter", name="India"  ) %>%
+  add_trace( y = ~USD_MEX_sintend, x = (fftRange - 1), type = "scatter", name="Mexico" )
   
 
 #SUECIA EURO / BRAZIL INDIA
