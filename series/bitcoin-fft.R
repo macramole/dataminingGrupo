@@ -3,9 +3,13 @@ library(plotly)
 df = read.csv("base_sin_tend.txt", sep = "\t")
 
 range = 118:length(df$BITCOIN_COINDESK_sintend)
+N = length(range)
 
 
 camposSinTend = c("BITCOIN_COINDESK_sintend", "USD_EUR_sintend", "USD_BZR_sintend", "USD_INR_sintend", "USD_MEX_sintend", "USD_JPY_sintend", "USD_SWF_sintend")
+
+par(mfrow=c(1,1))
+plot( df$BITCOIN_COINDESK_sintend, type = "l" )
 
 df.fft.original = matrix(ncol = length(camposSinTend), nrow = length(range) )
 df.fft = matrix(ncol = length(camposSinTend), nrow = length(range)/2 )
@@ -14,18 +18,21 @@ colnames(df.fft.original) = camposSinTend
 colnames(df.fft) = camposSinTend
 
 for ( campo in camposSinTend ) {
-  currentOriginal = fft( df[,campo][range] )
+  serie = df[,campo][range]
+  serie = serie - mean(serie)
+  
+  currentOriginal = fft( serie )
   df.fft.original[,campo] = currentOriginal
   
   currentFFT = Mod( currentOriginal )
-  currentFFT = currentFFT[1:(length(df.fft.bitcoin)/2)]
+  currentFFT = currentFFT[1:(length(currentFFT)/2)]
   df.fft[,campo] = currentFFT
 }
 
 # par(mfrow=c(1,1))
 par(mfrow=c(2,4))
 for ( campo in camposSinTend ) {
-  plot(0:12, df.fft[,campo][1:13], type="h", main = campo)
+  plot(1:12, df.fft[,campo][2:13], type="h", main = campo)
 }
 
 
