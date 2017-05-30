@@ -43,9 +43,13 @@ library(dplyr)
 
 as.data.frame(df.fft) %>%
   slice(2:13) %>%
-  plot_ly( y = ~BITCOIN_COINDESK_sintend, x = 1:12, type = "bar"  )
-  
-  add_trace( y = df.fft[, "USD_EUR_sintend"][2:13], x = 1:12, type = "bar"  )
+  plot_ly( y = ~BITCOIN_COINDESK_sintend, x = 1:12, type = "bar"  ) %>%
+  add_trace( y = ~USD_EUR_sintend, x = 1:12, type = "bar"  ) %>%
+  add_trace( y = ~USD_BZR_sintend, x = 1:12, type = "bar"  ) %>%
+  add_trace( y = ~USD_INR_sintend, x = 1:12, type = "bar"  ) %>%
+  add_trace( y = ~USD_MEX_sintend, x = 1:12, type = "bar"  ) %>%
+  add_trace( y = ~USD_JPY_sintend, x = 1:12, type = "bar"  ) %>%
+  add_trace( y = ~USD_SWF_sintend, x = 1:12, type = "bar"  )
 
 df.fft.bitcoin.original = fft( df$BITCOIN_COINDESK_sintend[range] )
 df.fft.bitcoin = Mod( df.fft.bitcoin.original )
