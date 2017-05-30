@@ -65,6 +65,8 @@ as.data.frame(df.fft) %>%
   add_trace( y = ~USD_MEX_sintend, x = 1:12, type = "scatter", name="Mexico" )
   
 
+#SUECIA EURO / BRAZIL INDIA
+
 df.fft.bitcoin.original = fft( df$BITCOIN_COINDESK_sintend[range] )
 df.fft.bitcoin = Mod( df.fft.bitcoin.original )
 df.fft.bitcoin = df.fft.bitcoin[1:(length(df.fft.bitcoin)/2)]
