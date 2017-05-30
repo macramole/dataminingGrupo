@@ -41,6 +41,7 @@ for ( campo in camposSinTend ) {
 
 library(dplyr)
 
+#BAR
 as.data.frame(df.fft) %>%
   slice(2:13) %>%
   plot_ly( y = ~BITCOIN_COINDESK_sintend, x = 1:12, type = "bar", name="Bitcoin"  ) %>%
@@ -51,6 +52,17 @@ as.data.frame(df.fft) %>%
   add_trace( y = ~USD_JPY_sintend, x = 1:12, type = "bar", name="Japon"  ) %>%
   add_trace( y = ~USD_SWF_sintend, x = 1:12, type = "bar", name="Suecia"  )
 
+#LINE
+as.data.frame(df.fft) %>%
+  slice(2:13) %>%
+  plot_ly( y = ~BITCOIN_COINDESK_sintend, x = 1:12, type = "scatter", mode="lines+markers", name="Bitcoin"  ) %>%
+  add_trace( y = ~USD_EUR_sintend, x = 1:12, type = "scatter", name="Euro"  ) %>%
+  add_trace( y = ~USD_BZR_sintend, x = 1:12, type = "scatter", name="Brazil"  ) %>%
+  add_trace( y = ~USD_INR_sintend, x = 1:12, type = "scatter", name="India"  ) %>%
+  add_trace( y = ~USD_MEX_sintend, x = 1:12, type = "scatter", name="Mexico" ) %>%
+  add_trace( y = ~USD_JPY_sintend, x = 1:12, type = "scatter", name="Japon"  ) %>%
+  add_trace( y = ~USD_SWF_sintend, x = 1:12, type = "scatter", name="Suecia"  )
+
 df.fft.bitcoin.original = fft( df$BITCOIN_COINDESK_sintend[range] )
 df.fft.bitcoin = Mod( df.fft.bitcoin.original )
 df.fft.bitcoin = df.fft.bitcoin[1:(length(df.fft.bitcoin)/2)]
@@ -60,7 +72,7 @@ plot(df.fft.bitcoin[1:50], type="h")
 plot_ly( y = df.fft.bitcoin[1:50] , x = 0:49, type = "bar"  )
 
 
-
+#layout( xaxis = list( title = "" ), yaxis = list( title = "Promedios" ) )
 
 
 # frecuenciasDejo = c(2)
