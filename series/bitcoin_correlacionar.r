@@ -34,6 +34,7 @@ plot_ly( y = names(autocorrelaciones), x = autocorrelaciones/lagMax)
 
 # Gráficos de autocorrelación junto con la prueba Ljung-Box
 
+png('plots/auto-correlacion.png',width=1200,height=800)
 par( mfrow = c(2,4) )
 ljung.tests <- data.frame()
 for(moneda in camposSinTend){
@@ -41,12 +42,17 @@ for(moneda in camposSinTend){
   ljung.tests <- rbind(ljung.tests,data.frame(moneda,ljung.test$statistic,"2.2e-16"))
   acf(df[moneda], lag.max = lagMax, main = moneda)
 }
+dev.off()
 
 names(ljung.tests) <- c("moneda","ljung.test.statistic","p.value")
 dev.off()
+png('plots/ljung-box.png')
 grid.table(ljung.tests,rows = NULL)
+dev.off()
 
 # Gráficos de correlación cruzada
 
-pnl <- function(x, y = x,xlim,ylim) { par(new = TRUE); ccf(x, y, lag.max = lagMax,yaxt="n",xaxt="n",xlim=c(-350,350),ylim=c(-0.8,0.8)); abline(v=0,col="red",lty=2) }
-pairs(df[,12:18], lower.panel = pnl, diag.panel = NULL, upper.panel =NULL,cex.labels=1,xlim=c(-350,350),ylim=c(-0.8,0.8))
+png('plots/correlacion-cruzada.png',width=1200,height=800)
+pnl <- function(x, y = x,xlim,ylim,cex.axis) { par(new = TRUE); ccf(x, y, lag.max = lagMax,yaxt="n",xaxt="n",xlim=c(-350,350),ylim=c(-0.8,0.8)); abline(v=0,col="red",lty=2) }
+pairs(df[,12:18], lower.panel = pnl, diag.panel = NULL, upper.panel =NULL,cex.axis=1.2,cex.labels=1.1,xlim=c(-350,350),ylim=c(-0.8,0.8))
+dev.off()
