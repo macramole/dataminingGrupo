@@ -5,6 +5,8 @@ library(grid)
 
 # Autocorrelación
 
+?acf
+
 df = read.csv("base_sin_tend.txt", sep = "\t")
 head(df)
 
@@ -13,7 +15,7 @@ plot( df$Fecha, df$BITCOIN_COINDESK_sintend, type="l" )
 plot( df$Fecha, df$USD_EUR_sintend, type="l" )
 plot( df$Fecha, df$USD_EUR_sintend, type="l" )
 
-lagMax = 365 * 1
+lagMax = 365 * 2
 
 camposSinTend = c("BITCOIN_COINDESK_sintend", "USD_EUR_sintend", "USD_BZR_sintend", "USD_INR_sintend", "USD_MEX_sintend", "USD_JPY_sintend", "USD_SWF_sintend")
 autocorrelaciones = c()
@@ -57,6 +59,6 @@ df.matrix <- df[,12:18]
 head(df.matrix)
 names(df.matrix) <- c("BITCOIN_COINDESK","USD_EUR","USD_BZR","USD_INR","USD_MEX","USD_JPY","USD_SWF")
 png('plots/correlacion-cruzada.png',width=800,height=600)
-pnl <- function(x, y = x,xlim,ylim,cex.axis) { par(new = TRUE); ccf(x, y, lag.max = lagMax,yaxt="n",xaxt="n",xlim=c(-350,350),ylim=c(-0.75,0.75)); abline(v=0,col="red",lty=2) }
-pairs(df.matrix, lower.panel = pnl, diag.panel = NULL, upper.panel =NULL,cex.axis=1.7,cex.labels=1.2,xlim=c(-350,350),ylim=c(-0.75,0.75))
+pnl <- function(x, y = x,xlim,ylim,cex.axis) { par(new = TRUE); ccf(x, y, lag.max = lagMax,yaxt="n",xaxt="n",xlim=c(-700,700),ylim=c(-0.75,0.75)); abline(v=0,col="red",lty=2) }
+pairs(df.matrix, lower.panel = pnl, diag.panel = NULL, upper.panel =NULL,cex.axis=1.7,cex.labels=1.2,xlim=c(-700,700),ylim=c(-0.75,0.75))
 dev.off()
